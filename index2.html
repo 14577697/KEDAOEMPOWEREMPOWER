@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>26级新生 · Empower 领导力超能力解锁</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            neon: {
+              cyan: '#22d3ee',
+              pink: '#f472b6',
+              violet: '#a78bfa',
+              lime: '#a3e635',
+              amber: '#fbbf24',
+              coral: '#fb7185',
+            },
+            void: {
+              900: '#0b0f1a',
+              800: '#12182b',
+              700: '#1a2240',
+            }
+          },
+          fontFamily: {
+            display: ['"Orbitron"', '"Noto Sans SC"', 'sans-serif'],
+            body: ['"Noto Sans SC"', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'pulse-glow': 'pulseGlow 2.2s ease-in-out infinite',
+            'float': 'float 4s ease-in-out infinite',
+            'scan': 'scan 2s linear infinite',
+            'decode': 'decodePulse 0.6s ease-in-out infinite',
+            'pop-in': 'popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+            'fade-up': 'fadeUp 0.4s ease-out forwards',
+          },
+          keyframes: {
+            pulseGlow: {
+              '0%, 100%': { boxShadow: '0 0 24px rgba(34,211,238,0.45), 0 0 60px rgba(167,139,250,0.25)', transform: 'scale(1)' },
+              '50%': { boxShadow: '0 0 40px rgba(244,114,182,0.7), 0 0 90px rgba(34,211,238,0.4)', transform: 'scale(1.03)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            scan: {
+              '0%': { transform: 'translateY(-100%)' },
+              '100%': { transform: 'translateY(200%)' },
+            },
+            decodePulse: {
+              '0%, 100%': { opacity: '0.55' },
+              '50%': { opacity: '1' },
+            },
+            popIn: {
+              '0%': { opacity: '0', transform: 'scale(0.82)' },
+              '100%': { opacity: '1', transform: 'scale(1)' },
+            },
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(24px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Orbitron:wght@600;800&display=swap" rel="stylesheet" />
+  <style>
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    body {
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(167, 139, 250, 0.28), transparent 55%),
+        radial-gradient(ellipse 70% 50% at 85% 20%, rgba(34, 211, 238, 0.22), transparent 50%),
+        radial-gradient(ellipse 60% 45% at 50% 90%, rgba(244, 114, 182, 0.18), transparent 55%),
+        linear-gradient(160deg, #0b0f1a 0%, #12182b 45%, #0d1324 100%);
+    }
+    .grid-overlay {
+      background-image:
+        linear-gradient(rgba(34, 211, 238, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34, 211, 238, 0.06) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+    }
+    .glass {
+      background: rgba(18, 24, 43, 0.72);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(34, 211, 238, 0.22);
+    }
+    .option-card {
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease, filter 0.15s ease;
+      will-change: transform, box-shadow;
+    }
+    .option-card:active,
+    .option-card.is-pressed {
+      transform: scale(0.95);
+      filter: brightness(1.15);
+      border-color: rgba(255, 255, 255, 0.85) !important;
+      box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.35),
+        0 0 28px rgba(34, 211, 238, 0.75),
+        0 0 56px rgba(167, 139, 250, 0.55),
+        0 0 90px rgba(244, 114, 182, 0.35);
+    }
+    .option-card.is-focused {
+      border-color: rgba(255, 255, 255, 0.85) !important;
+      filter: brightness(1.12);
+      box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.35),
+        0 0 28px rgba(34, 211, 238, 0.75),
+        0 0 56px rgba(167, 139, 250, 0.55),
+        0 0 90px rgba(244, 114, 182, 0.35);
+    }
+    .ssr-card {
+      background:
+        linear-gradient(145deg, rgba(251, 191, 36, 0.18), transparent 40%),
+        linear-gradient(225deg, rgba(244, 114, 182, 0.2), transparent 45%),
+        linear-gradient(180deg, #1a2240 0%, #12182b 100%);
+      border: 3px solid transparent;
+      background-clip: padding-box;
+      box-shadow:
+        0 0 0 3px rgba(251, 191, 36, 0.85),
+        0 0 40px rgba(251, 191, 36, 0.35),
+        0 0 80px rgba(167, 139, 250, 0.25),
+        inset 0 0 60px rgba(251, 191, 36, 0.08);
+    }
+    .station-banner {
+      text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+      animation: stationBlink 1.2s ease-in-out infinite;
+      white-space: nowrap;
+      display: inline-block;
+      max-width: 100%;
+      letter-spacing: 0.02em;
+    }
+    @keyframes stationBlink {
+      0%, 100% { opacity: 1; filter: brightness(1.1); }
+      50% { opacity: 0.88; filter: brightness(1.35); }
+    }
+    .counter-digit {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.05em;
+    }
+    .admin-scroll::-webkit-scrollbar { width: 10px; }
+    .admin-scroll::-webkit-scrollbar-track { background: #0b0f1a; border-radius: 8px; }
+    .admin-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 8px; }
+    .view-hidden { display: none !important; }
+    .decode-bars span {
+      display: block;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22d3ee, #a78bfa, #f472b6);
+      animation: barGrow 1.5s ease-in-out forwards;
+      transform-origin: left;
+    }
+    .hero-title-block {
+      min-width: 0;
+      text-align: left;
+    }
+    .hero-title-line {
+      white-space: nowrap;
+    }
+    .hero-brand-tag {
+      letter-spacing: 0.18em;
+    }
+    @media (max-width: 1100px) {
+      .hero-title-line {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body class="font-body text-white h-full relative">
+  <div class="grid-overlay absolute inset-0 pointer-events-none"></div>
+
+  <!-- ========== MODE A: Dashboard ========== -->
+  <div id="view-dashboard" class="relative z-10 h-full flex flex-col px-6 py-5 lg:px-10 lg:py-6">
+    <header class="flex items-start justify-between gap-6 lg:gap-10 mb-8 lg:mb-10">
+      <div id="main-title" class="hero-title-block cursor-pointer flex-1 pt-1">
+        <p class="hero-brand-tag text-neon-cyan/85 text-base lg:text-lg xl:text-xl font-medium mb-3">
+          科道书院 · 26级迎新日
+        </p>
+        <h1 class="font-display font-extrabold leading-[1.15] space-y-2 lg:space-y-3">
+          <span class="hero-title-line block text-3xl sm:text-4xl lg:text-5xl xl:text-[3.4rem] 2xl:text-6xl bg-gradient-to-r from-white via-neon-cyan to-neon-cyan bg-clip-text text-transparent drop-shadow-[0_0_24px_rgba(34,211,238,0.25)]">
+            科道新生 · LEADERSHIP图谱
+          </span>
+          <span class="hero-title-line block text-2xl sm:text-3xl lg:text-4xl xl:text-[2.35rem] 2xl:text-5xl font-black bg-gradient-to-r from-neon-pink via-neon-violet to-neon-pink bg-clip-text text-transparent">
+            解锁你的 <span class="relative inline-block px-1">Empower</span> 超能力
+          </span>
+        </h1>
+      </div>
+      <div class="glass rounded-2xl px-6 py-4 min-w-[220px] text-center shrink-0 animate-float">
+        <p class="text-slate-300 text-base lg:text-lg mb-1">已有</p>
+        <p class="font-display text-5xl lg:text-6xl font-extrabold text-neon-amber counter-digit" id="unlock-count">0</p>
+        <p class="text-slate-300 text-base lg:text-lg mt-1">位新生解锁</p>
+      </div>
+    </header>
+
+    <main class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
+      <section class="glass rounded-3xl p-5 lg:p-6 flex flex-col">
+        <h2 class="font-display text-xl lg:text-2xl text-neon-cyan mb-3 flex items-center gap-3">
+          <span class="inline-block w-3 h-3 rounded-full bg-neon-cyan shadow-[0_0_12px_#22d3ee]"></span>
+          危机时刻 · Leader 风格分布
+        </h2>
+        <div class="flex-1 min-h-[220px] relative">
+          <canvas id="chart-q1"></canvas>
+        </div>
+      </section>
+      <section class="glass rounded-3xl p-5 lg:p-6 flex flex-col">
+        <h2 class="font-display text-xl lg:text-2xl text-neon-pink mb-3 flex items-center gap-3">
+          <span class="inline-block w-3 h-3 rounded-full bg-neon-pink shadow-[0_0_12px_#f472b6]"></span>
+          大学赋能 · 需求方向分布
+        </h2>
+        <div class="flex-1 min-h-[220px] relative">
+          <canvas id="chart-q2"></canvas>
+        </div>
+      </section>
+    </main>
+
+    <footer class="mt-5 lg:mt-6 flex flex-col items-center gap-3">
+      <p class="text-neon-cyan/90 text-lg lg:text-2xl font-medium tracking-wide">
+        按下按钮，开启测试
+      </p>
+      <button id="btn-start"
+        class="animate-pulse-glow w-full max-w-4xl rounded-full bg-gradient-to-r from-neon-violet via-neon-pink to-neon-cyan px-8 py-6 lg:py-8 text-2xl sm:text-3xl lg:text-4xl font-black tracking-wide shadow-2xl active:scale-[0.98] transition-transform">
+        点击触控屏 · 解锁你的超能力
+      </button>
+    </footer>
+  </div>
+
+  <!-- ========== MODE B: Questions ========== -->
+  <div id="view-quiz" class="view-hidden relative z-10 h-full flex flex-col px-6 py-5 lg:px-10 lg:py-6">
+    <div class="mb-4 lg:mb-6">
+      <div class="flex items-center gap-3 mb-3">
+        <span id="step-badge" class="font-display text-neon-lime text-lg lg:text-xl tracking-widest">STEP 01 / 02</span>
+        <div class="flex-1 h-2 rounded-full bg-void-700 overflow-hidden">
+          <div id="progress-bar" class="h-full w-1/2 bg-gradient-to-r from-neon-cyan to-neon-violet transition-all duration-500"></div>
+        </div>
+      </div>
+      <h2 id="question-text" class="font-display font-bold text-2xl sm:text-3xl lg:text-4xl xl:text-5xl leading-snug text-white"></h2>
+      <p class="mt-3 text-slate-300 text-base lg:text-xl tracking-wide space-y-1">
+        <span class="block">短按切换选项</span>
+        <span class="block">长按确认选择</span>
+      </p>
+    </div>
+    <div id="options-grid" class="flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 content-center w-full max-w-7xl mx-auto"></div>
+  </div>
+
+  <!-- ========== Decoding animation ========== -->
+  <div id="view-decode" class="view-hidden relative z-10 h-full flex flex-col items-center justify-center px-8">
+    <div class="relative w-full max-w-3xl glass rounded-3xl p-10 lg:p-14 overflow-hidden">
+      <div class="absolute inset-x-0 top-0 h-1 overflow-hidden">
+        <div class="h-full w-1/3 bg-gradient-to-r from-transparent via-neon-cyan to-transparent animate-scan"></div>
+      </div>
+      <p class="font-display text-center text-3xl lg:text-5xl font-extrabold text-neon-cyan animate-decode mb-8">
+        基因解码中...
+      </p>
+      <div class="decode-bars space-y-4">
+        <span style="animation-delay:0s"></span>
+        <span style="animation-delay:0.15s"></span>
+        <span style="animation-delay:0.3s"></span>
+      </div>
+      <p class="text-center text-slate-400 mt-8 text-lg lg:text-xl tracking-widest">UNLOCKING YOUR SUPERPOWER</p>
+    </div>
+  </div>
+
+  <!-- ========== Result ========== -->
+  <div id="view-result" class="view-hidden relative z-10 h-full flex flex-col items-center justify-center px-6 py-5 lg:px-10">
+    <div class="ssr-card animate-pop-in w-full max-w-6xl rounded-[2rem] p-8 sm:p-10 lg:p-14 xl:p-16 text-center">
+      <p class="font-display text-neon-amber text-lg lg:text-2xl tracking-[0.4em] mb-4">★ SSR 超能力角色卡 ★</p>
+      <p class="text-slate-300 text-base lg:text-xl mb-3">你的专属称号</p>
+      <h2 id="result-title" class="font-display font-black text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-none mb-8 bg-gradient-to-r from-neon-amber via-white to-neon-pink bg-clip-text text-transparent">
+        【行动大师】
+      </h2>
+      <p id="result-trait" class="text-xl sm:text-2xl lg:text-3xl text-white/95 mb-10 lg:mb-12">
+        解锁领导力品质：【⚡ 敢想敢干的行动力】
+      </p>
+      <div class="flex justify-center px-2">
+        <div id="result-station" class="station-banner font-black text-xl sm:text-2xl lg:text-3xl xl:text-[2.35rem] text-neon-lime leading-normal">
+          请前往 【⚡ 行动站】 领取你的专属能量包！
+        </div>
+      </div>
+      <p class="mt-10 text-slate-400 text-base lg:text-lg">即将返回超能力图谱…</p>
+    </div>
+  </div>
+
+  <!-- ========== Admin Panel ========== -->
+  <div id="admin-modal" class="view-hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 lg:p-8">
+    <div class="glass w-full max-w-5xl max-h-[90vh] rounded-3xl flex flex-col overflow-hidden border-neon-violet/40">
+      <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
+        <h3 class="font-display text-2xl lg:text-3xl text-neon-violet">管理员控制面板</h3>
+        <button id="admin-close" class="rounded-xl bg-void-700 hover:bg-void-700/80 px-5 py-3 text-lg font-bold">关闭</button>
+      </div>
+      <div class="px-6 py-4 flex flex-wrap gap-3 items-center justify-between border-b border-white/10">
+        <p class="text-slate-300 text-lg">共 <span id="admin-count" class="text-neon-amber font-bold">0</span> 条解锁记录</p>
+        <button id="admin-clear-all"
+          class="rounded-xl bg-red-600 hover:bg-red-500 active:bg-red-700 px-6 py-3 text-lg font-black shadow-lg shadow-red-900/40">
+          一键清空所有数据
+        </button>
+      </div>
+      <div id="admin-list" class="admin-scroll flex-1 overflow-y-auto p-4 lg:p-6 space-y-3"></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'empower_unlock_records_v2';
+
+      const Q1_OPTIONS = [
+        {
+          key: 'A',
+          label: '果断带头！迅速给出方案，带大家开冲',
+          color: '#fbbf24',
+        },
+        {
+          key: 'B',
+          label: '自信站出来！用清晰表达与气场凝聚人心',
+          color: '#f472b6',
+        },
+        {
+          key: 'C',
+          label: '稳住心态！先安抚大家情绪，给团队心理支持',
+          color: '#a78bfa',
+        },
+      ];
+
+      const Q2_OPTIONS = [
+        {
+          key: 'A',
+          label: '不做拖延症！想到的事立刻搞定',
+          subtitle: '⚡ 赋予你：敢想敢干的行动力',
+          color: '#fbbf24',
+        },
+        {
+          key: 'B',
+          label: '自信开麦！大方表达想法与审美',
+          subtitle: '🎨 赋予你：自带气场的号召力',
+          color: '#f472b6',
+        },
+        {
+          key: 'C',
+          label: '拒绝内耗！随时保持好心态与能量',
+          subtitle: '🧠 赋予你：稳定全场的心理韧性',
+          color: '#a78bfa',
+        },
+      ];
+
+      // 结果按 A/B/C「为主」映射到 3 大站点
+      const RESULT_MAP = {
+        A: {
+          title: '行动大师',
+          name: '⚡ 行动站',
+          trait: '敢想敢干的行动力',
+          emoji: '⚡',
+          color: '#fbbf24',
+        },
+        B: {
+          title: '共鸣大师',
+          name: '🎨 声量站',
+          trait: '自带气场的号召力',
+          emoji: '🎨',
+          color: '#f472b6',
+        },
+        C: {
+          title: '充能大师',
+          name: '🧠 充能站',
+          trait: '稳定全场的心理韧性',
+          emoji: '🧠',
+          color: '#a78bfa',
+        },
+      };
+
+      const OPTION_KEYS = ['A', 'B', 'C'];
+
+      const OPTION_PALETTES = [
+        'from-amber-500/25 to-amber-900/40 border-amber-400/50 hover:border-amber-300',
+        'from-pink-500/25 to-pink-900/40 border-pink-400/50 hover:border-pink-300',
+        'from-violet-500/25 to-violet-900/40 border-violet-400/50 hover:border-violet-300',
+      ];
+
+      const QUESTIONS = {
+        1: {
+          text: '当团队遇到突发危机，你认为最酷的 Leader 动作是？',
+          options: Q1_OPTIONS,
+        },
+        2: {
+          text: '你觉得未来大学里，最需要被 Empower（赋能）的是？',
+          options: Q2_OPTIONS,
+        },
+      };
+
+      const LONG_PRESS_MS = 800;
+
+      let records = loadRecords();
+      let answers = { q1: null, q2: null };
+      let currentStep = 1;
+      let selectedIndex = 0;
+      let enterPressed = false;
+      let enterDownAt = 0;
+      let titleClickCount = 0;
+      let titleClickTimer = null;
+      let resultTimer = null;
+      let chartQ1 = null;
+      let chartQ2 = null;
+      let currentView = 'dashboard';
+
+      const els = {
+        dashboard: document.getElementById('view-dashboard'),
+        quiz: document.getElementById('view-quiz'),
+        decode: document.getElementById('view-decode'),
+        result: document.getElementById('view-result'),
+        unlockCount: document.getElementById('unlock-count'),
+        mainTitle: document.getElementById('main-title'),
+        btnStart: document.getElementById('btn-start'),
+        stepBadge: document.getElementById('step-badge'),
+        progressBar: document.getElementById('progress-bar'),
+        questionText: document.getElementById('question-text'),
+        optionsGrid: document.getElementById('options-grid'),
+        resultTitle: document.getElementById('result-title'),
+        resultTrait: document.getElementById('result-trait'),
+        resultStation: document.getElementById('result-station'),
+        adminModal: document.getElementById('admin-modal'),
+        adminClose: document.getElementById('admin-close'),
+        adminClearAll: document.getElementById('admin-clear-all'),
+        adminList: document.getElementById('admin-list'),
+        adminCount: document.getElementById('admin-count'),
+      };
+
+      function loadRecords() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveRecords() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      }
+
+      function showView(name) {
+        const map = {
+          dashboard: els.dashboard,
+          quiz: els.quiz,
+          decode: els.decode,
+          result: els.result,
+        };
+        Object.entries(map).forEach(([key, el]) => {
+          el.classList.toggle('view-hidden', key !== name);
+        });
+        currentView = name;
+        // 切页时清空按键状态，避免跨页面误触
+        enterPressed = false;
+        enterDownAt = 0;
+      }
+
+      function isEnterKey(e) {
+        return e.key === 'Enter' || e.code === 'Enter' || e.keyCode === 13;
+      }
+
+      function isAdminOpen() {
+        return !els.adminModal.classList.contains('view-hidden');
+      }
+
+      function getOptionButtons() {
+        return Array.from(els.optionsGrid.querySelectorAll('.option-card'));
+      }
+
+      function updateOptionHighlight() {
+        getOptionButtons().forEach((btn, i) => {
+          btn.classList.toggle('is-focused', i === selectedIndex);
+        });
+      }
+
+      /** 切换到下一个选项（Enter 短按） */
+      function handleNextOption() {
+        const buttons = getOptionButtons();
+        if (!buttons.length) return;
+        selectedIndex = (selectedIndex + 1) % buttons.length;
+        updateOptionHighlight();
+      }
+
+      /** 确认当前选项（Enter 长按 / 鼠标点击） */
+      function handleConfirmOption() {
+        const buttons = getOptionButtons();
+        const q = QUESTIONS[currentStep];
+        if (!buttons.length || !q) return;
+
+        const btn = buttons[selectedIndex];
+        const opt = q.options[selectedIndex];
+        if (!btn || !opt || btn.dataset.locked === '1') return;
+
+        buttons.forEach((b) => { b.dataset.locked = '1'; });
+        btn.classList.add('is-pressed');
+
+        const step = currentStep;
+        const key = opt.key;
+        setTimeout(() => onOptionSelect(step, key), 180);
+      }
+
+      /** 首页开始（Enter 短按 / 鼠标点击） */
+      function handleStart() {
+        startUnlock();
+      }
+
+      function onEnterKeyDown(e) {
+        if (!isEnterKey(e)) return;
+        if (e.repeat) {
+          e.preventDefault();
+          return;
+        }
+        if (isAdminOpen()) return;
+        if (currentView !== 'dashboard' && currentView !== 'quiz') return;
+
+        e.preventDefault();
+        if (enterPressed) return;
+        enterPressed = true;
+        enterDownAt = Date.now();
+      }
+
+      function onEnterKeyUp(e) {
+        if (!isEnterKey(e)) return;
+        if (!enterPressed) return;
+
+        e.preventDefault();
+        const duration = Date.now() - enterDownAt;
+        enterPressed = false;
+        enterDownAt = 0;
+
+        if (isAdminOpen()) return;
+
+        // 一次按压只产生一次动作
+        if (currentView === 'dashboard') {
+          if (duration < LONG_PRESS_MS) {
+            handleStart();
+          }
+          return;
+        }
+
+        if (currentView === 'quiz') {
+          if (duration >= LONG_PRESS_MS) {
+            handleConfirmOption();
+          } else {
+            handleNextOption();
+          }
+        }
+      }
+
+      function bindEnterControl() {
+        window.addEventListener('keydown', onEnterKeyDown);
+        window.addEventListener('keyup', onEnterKeyUp);
+      }
+
+      function countBy(field, keys = OPTION_KEYS) {
+        const counts = Object.fromEntries(keys.map((k) => [k, 0]));
+        records.forEach((r) => {
+          const k = r[field];
+          if (counts[k] !== undefined) counts[k] += 1;
+        });
+        return counts;
+      }
+
+      /** 两题计分：相同则该选项「为主」；不同则平局，以 Step 02 为准 */
+      function resolveDominantKey(q1, q2) {
+        if (q1 === q2) return q1;
+        return q2;
+      }
+
+      function updateCounter() {
+        els.unlockCount.textContent = String(records.length);
+      }
+
+      function chartData(field, labels, colors, keys) {
+        const counts = countBy(field, keys);
+        return {
+          labels,
+          datasets: [{
+            data: keys.map((k) => counts[k]),
+            backgroundColor: colors.map((c) => c + 'cc'),
+            borderColor: colors,
+            borderWidth: 2,
+            hoverOffset: 8,
+          }],
+        };
+      }
+
+      function chartOptions() {
+        return {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              align: 'center',
+              fullSize: true,
+              labels: {
+                color: '#e2e8f0',
+                font: { size: 15, family: '"Noto Sans SC", sans-serif', weight: '500' },
+                padding: 18,
+                boxWidth: 14,
+                boxHeight: 14,
+                usePointStyle: false,
+              },
+            },
+            tooltip: {
+              callbacks: {
+                label(ctx) {
+                  const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                  const val = ctx.raw || 0;
+                  const pct = total ? ((val / total) * 100).toFixed(1) : '0.0';
+                  return ` ${ctx.label}: ${val} 人 (${pct}%)`;
+                },
+              },
+            },
+          },
+        };
+      }
+
+      function initCharts() {
+        const q1Labels = ['A. 果断开冲', 'B. 凝聚人心', 'C. 心态支持'];
+        const q1Colors = Q1_OPTIONS.map((o) => o.color);
+        const q2Labels = ['A. 行动力', 'B. 号召力', 'C. 心理韧性'];
+        const q2Colors = Q2_OPTIONS.map((o) => o.color);
+
+        const ctx1 = document.getElementById('chart-q1');
+        const ctx2 = document.getElementById('chart-q2');
+
+        chartQ1 = new Chart(ctx1, {
+          type: 'doughnut',
+          data: chartData('q1', q1Labels, q1Colors, OPTION_KEYS),
+          options: chartOptions(),
+        });
+
+        chartQ2 = new Chart(ctx2, {
+          type: 'doughnut',
+          data: chartData('q2', q2Labels, q2Colors, OPTION_KEYS),
+          options: chartOptions(),
+        });
+      }
+
+      function refreshCharts() {
+        if (!chartQ1 || !chartQ2) return;
+        const q1 = countBy('q1');
+        const q2 = countBy('q2');
+        chartQ1.data.datasets[0].data = OPTION_KEYS.map((k) => q1[k]);
+        chartQ2.data.datasets[0].data = OPTION_KEYS.map((k) => q2[k]);
+        chartQ1.update();
+        chartQ2.update();
+        updateCounter();
+      }
+
+      function startUnlock() {
+        if (resultTimer) {
+          clearTimeout(resultTimer);
+          resultTimer = null;
+        }
+        answers = { q1: null, q2: null };
+        currentStep = 1;
+        showView('quiz');
+        renderQuestion(1);
+      }
+
+      function renderQuestion(step) {
+        currentStep = step;
+        selectedIndex = 0;
+        const q = QUESTIONS[step];
+        els.stepBadge.textContent = `STEP 0${step} / 02`;
+        els.progressBar.style.width = step === 1 ? '50%' : '100%';
+        els.questionText.textContent = q.text;
+        els.optionsGrid.innerHTML = '';
+        els.optionsGrid.className =
+          'flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 content-center justify-items-stretch w-full max-w-7xl mx-auto';
+
+        q.options.forEach((opt, i) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = [
+            'option-card glass rounded-3xl border-2 p-5 lg:p-7 text-left',
+            'bg-gradient-to-br', OPTION_PALETTES[i],
+            'animate-fade-up min-h-[150px] lg:min-h-[200px]',
+          ].join(' ');
+          btn.style.animationDelay = `${i * 0.06}s`;
+          btn.innerHTML = `
+            <div class="flex items-start gap-4 h-full">
+              <span class="font-display shrink-0 w-14 h-14 lg:w-16 lg:h-16 rounded-2xl bg-white/10 flex items-center justify-center text-2xl lg:text-3xl font-black text-white border border-white/20">
+                ${opt.key}
+              </span>
+              <div class="min-w-0 flex-1 flex flex-col justify-center gap-2">
+                <p class="text-xl sm:text-2xl lg:text-[1.65rem] xl:text-3xl font-bold leading-snug text-white">${opt.label}</p>
+                ${opt.subtitle ? `<p class="text-base lg:text-lg text-white/70 leading-snug">${opt.subtitle}</p>` : ''}
+              </div>
+            </div>
+          `;
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            selectedIndex = i;
+            updateOptionHighlight();
+            handleConfirmOption();
+          });
+          els.optionsGrid.appendChild(btn);
+        });
+
+        updateOptionHighlight();
+      }
+
+      function onOptionSelect(step, key) {
+        if (step === 1) {
+          answers.q1 = key;
+          renderQuestion(2);
+          return;
+        }
+        answers.q2 = key;
+        playDecodeThenResult();
+      }
+
+      function playDecodeThenResult() {
+        showView('decode');
+        setTimeout(() => {
+          const dominant = resolveDominantKey(answers.q1, answers.q2);
+          const result = RESULT_MAP[dominant];
+          if (!result) return;
+
+          els.resultTitle.textContent = `【${result.title}】`;
+          els.resultTrait.textContent = `解锁领导力品质：【${result.emoji} ${result.trait}】`;
+          els.resultStation.style.color = result.color;
+          els.resultStation.textContent = `请前往 【${result.name}】 领取你的专属能量包！`;
+
+          showView('result');
+
+          resultTimer = setTimeout(() => {
+            commitRecord(result, dominant);
+            showView('dashboard');
+            refreshCharts();
+            resultTimer = null;
+          }, 5000);
+        }, 1500);
+      }
+
+      function commitRecord(result, dominant) {
+        records.push({
+          id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+          q1: answers.q1,
+          q2: answers.q2,
+          dominant,
+          title: result.title,
+          station: result.name,
+          trait: result.trait,
+          createdAt: new Date().toISOString(),
+        });
+        saveRecords();
+      }
+
+      function formatTime(iso) {
+        try {
+          const d = new Date(iso);
+          const pad = (n) => String(n).padStart(2, '0');
+          return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+        } catch {
+          return iso;
+        }
+      }
+
+      function openAdmin() {
+        renderAdminList();
+        els.adminModal.classList.remove('view-hidden');
+      }
+
+      function closeAdmin() {
+        els.adminModal.classList.add('view-hidden');
+      }
+
+      function renderAdminList() {
+        els.adminCount.textContent = String(records.length);
+        if (!records.length) {
+          els.adminList.innerHTML = `
+            <div class="text-center text-slate-400 text-xl py-16">暂无解锁记录</div>
+          `;
+          return;
+        }
+
+        const sorted = [...records].reverse();
+        els.adminList.innerHTML = sorted.map((r) => `
+          <div class="flex flex-wrap items-center gap-3 lg:gap-4 rounded-2xl bg-void-900/80 border border-white/10 px-4 py-4" data-id="${r.id}">
+            <div class="flex-1 min-w-[200px]">
+              <p class="font-bold text-lg lg:text-xl text-neon-amber">【${r.title}】</p>
+              <p class="text-slate-300 text-sm lg:text-base mt-1">
+                Q1=${r.q1} · Q2=${r.q2} · ${r.station} · ${r.trait}
+              </p>
+              <p class="text-slate-500 text-sm mt-1">${formatTime(r.createdAt)}</p>
+            </div>
+            <button type="button" data-delete="${r.id}"
+              class="rounded-xl bg-red-700/90 hover:bg-red-600 px-5 py-3 font-bold text-base lg:text-lg">
+              删除
+            </button>
+          </div>
+        `).join('');
+
+        els.adminList.querySelectorAll('[data-delete]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-delete');
+            records = records.filter((r) => r.id !== id);
+            saveRecords();
+            renderAdminList();
+            refreshCharts();
+          });
+        });
+      }
+
+      // Events
+      els.btnStart.addEventListener('click', handleStart);
+      bindEnterControl();
+
+      els.mainTitle.addEventListener('click', () => {
+        titleClickCount += 1;
+        if (titleClickTimer) clearTimeout(titleClickTimer);
+        titleClickTimer = setTimeout(() => { titleClickCount = 0; }, 2500);
+        if (titleClickCount >= 5) {
+          titleClickCount = 0;
+          openAdmin();
+        }
+      });
+
+      els.adminClose.addEventListener('click', closeAdmin);
+
+      els.adminModal.addEventListener('click', (e) => {
+        if (e.target === els.adminModal) closeAdmin();
+      });
+
+      els.adminClearAll.addEventListener('click', () => {
+        const ok = window.confirm('确定要清空所有解锁记录吗？此操作不可恢复。');
+        if (!ok) return;
+        records = [];
+        saveRecords();
+        renderAdminList();
+        refreshCharts();
+      });
+
+      // Boot
+      updateCounter();
+      initCharts();
+      showView('dashboard');
+    })();
+  </script>
+</body>
+</html>
